@@ -1,3 +1,7 @@
+<script setup lang="ts">
+const test = computed(() => "ss");
+</script>
+
 <template>
-  <div>ddss</div>
+  <div>{{ test }}</div>
 </template>

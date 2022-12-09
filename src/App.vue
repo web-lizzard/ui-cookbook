@@ -1,12 +1,9 @@
 <script setup lang="ts">
+const info = computed(() => 'test');
 </script>
 
 <template>
-    <main>
-      ui cookbook
-    </main>
+  <main>{{ info }}</main>
 </template>
 
-<style scoped>
-
-  </style>
+<style scoped></style>
