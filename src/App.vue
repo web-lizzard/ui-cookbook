@@ -1,12 +1,10 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <template>
-    <main>
-      ui cookbook
-    </main>
+  <main>ui cookbook</main>
 </template>
 
-<style scoped>
-
-  </style>
+<style lang="scss" scoped>
+main {
+}
+</style>
