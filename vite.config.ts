@@ -9,13 +9,9 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
-    },
-  },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        additionalData: `@import '@/assets/scss/index';`,
-      },
+      scss: fileURLToPath(
+        new URL('./src/assets/scss/abstracts', import.meta.url)
+      ),
     },
   },
 });
