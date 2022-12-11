@@ -8,19 +8,36 @@ export default {
 import { computed } from 'vue';
 
 export interface Props {
-  error: boolean;
+  error?: boolean;
+  id: string;
+  label?: string;
+  value: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  error: false,
+  label: 'Some Label',
 });
+
+const emit = defineEmits<{ (e: 'update:modelValue', value: string): void }>();
+
+const changeInputValue = (event: Event) => {
+  const value = (event.target as HTMLInputElement).value;
+  emit('update:modelValue', value);
+};
 
 const errorClass = computed(() => props.error && 'custom-input--error');
 </script>
 
 <template>
   <div :class="['custom-input', errorClass]">
-    <input v-bind="$attrs" class="custom-input__field" placeholder="test" />
+    <input
+      @input="changeInputValue"
+      v-bind="$attrs"
+      :id="id"
+      class="custom-input__field"
+      placeholder="test"
+    />
+    <label class="custom-input__label" :for="id">{{ label }}</label>
     <span class="custom-input__border-bottom" />
     <span class="custom-input__border-right" />
     <span class="custom-input__border-top" />
@@ -31,20 +48,32 @@ const errorClass = computed(() => props.error && 'custom-input--error');
 <style scoped lang="scss">
 @use 'scss/variables';
 
+$animation-duration: 0.2s;
+$border-thickness: 2px;
+$input-padding-left: 1.5rem;
+
+@mixin input-border-values($width, $height, $transition-delay: 0s) {
+  position: absolute;
+  background-color: variables.$blue-400;
+  width: $width;
+  height: $height;
+  transition: transform $animation-duration $transition-delay ease-in-out;
+}
+
 .custom-input {
   $self: &;
 
   position: relative;
   max-width: fit-content;
   overflow: hidden;
+  color: variables.$blue-500;
 
   &__field {
     background-color: transparent;
     border: 0;
-    font: inherit;
-    padding: 1rem 1.5rem;
+    padding: 1.5rem $input-padding-left 1.5rem $input-padding-left;
     border-bottom: 2px solid variables.$blue-700;
-    color: variables.$blue-500;
+    color: inherit;
 
     &:focus {
       outline: none;
@@ -59,53 +88,59 @@ const errorClass = computed(() => props.error && 'custom-input--error');
     &:focus ~ #{ $self }__border-left {
       transform: translateY(0);
     }
+
+    &:focus ~ #{$self}__label,
+    &:not(:placeholder-shown) ~ #{$self}__label {
+      transform: translate(50%, -110%) scale(0.7);
+    }
+
+    &::placeholder {
+      opacity: 0;
+    }
+  }
+
+  &__label {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translate($input-padding-left, -50%);
+    color: variables.$blue-500;
+    transition: transform 0.2s ease-in;
   }
 
   &__border-bottom {
+    @include input-border-values(100%, $border-thickness);
     bottom: 0;
     left: 0;
-    position: absolute;
-    width: 100%;
-    height: 2px;
-    background-color: variables.$blue-400;
     transform: translateX(-100%);
-    transition: transform 0.2s ease-in-out;
   }
 
   &__border-right {
+    @include input-border-values($border-thickness, 100%, 0.2s);
     bottom: 0;
     right: 0;
-    position: absolute;
-    width: 2px;
-    height: 100%;
-    background-color: variables.$blue-400;
     transform: translateY(100%);
-    transition: transform 0.2s 0.2s ease-in-out;
   }
 
   &__border-top {
+    @include input-border-values(100%, $border-thickness, 0.4s);
     top: 0;
     right: 0;
-    position: absolute;
-    width: 100%;
-    height: 2px;
-    background-color: variables.$blue-400;
     transform: translateX(100%);
-    transition: transform 0.2s 0.4s ease-in-out;
   }
 
   &__border-left {
+    @include input-border-values($border-thickness, 100%, 0.6s);
     top: 0;
     left: 0;
-    position: absolute;
-    height: 100%;
-    width: 2px;
-    background-color: variables.$blue-400;
     transform: translateY(-100%);
-    transition: transform 0.2s 0.6s ease-in-out;
   }
 
   &--error {
+    #{$self}__field {
+      border-color: variables.$red-300;
+    }
+
     #{$self}__border-left,
     #{$self}__border-right,
     #{$self}__border-top,
