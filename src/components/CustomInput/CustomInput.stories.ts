@@ -9,11 +9,17 @@ export default {
    * See https://storybook.js.org/docs/vue/configure/overview#configure-story-loading
    * to learn how to generate automatic titles
    */
-  title: 'CustomInput',
+  title: 'Custom Input',
   component: CustomInput,
 } as Meta<typeof CustomInput>;
 
-export const Primary: StoryFn<typeof CustomInput> = () => ({
+const Template: StoryFn<typeof CustomInput> = (args) => ({
   components: { CustomInput },
-  template: '<CustomInput />',
+  setup() {
+    //👇 The args will now be passed down to the template
+    return { args };
+  },
+  template: '<CustomInput v-bind="args" />',
 });
+
+export const Primary = Template.bind({});

@@ -1,7 +1,11 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import CustomInput from '@/components/CustomInput/CustomInput.vue';
+</script>
 
 <template>
-  <main>ui cookbook</main>
+  <main>
+    <CustomInput />
+  </main>
 </template>
 
 <style lang="scss" scoped>
