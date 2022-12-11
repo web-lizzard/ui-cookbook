@@ -9,13 +9,13 @@ import { computed } from 'vue';
 
 export interface Props {
   error?: boolean;
-  id: string;
+  id?: string;
   label?: string;
-  value: string;
+  modelValue?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  label: 'Some Label',
+  label: 'Default Label',
 });
 
 const emit = defineEmits<{ (e: 'update:modelValue', value: string): void }>();
@@ -34,8 +34,9 @@ const errorClass = computed(() => props.error && 'custom-input--error');
       @input="changeInputValue"
       v-bind="$attrs"
       :id="id"
+      :value="modelValue"
       class="custom-input__field"
-      placeholder="test"
+      :placeholder="label"
     />
     <label class="custom-input__label" :for="id">{{ label }}</label>
     <span class="custom-input__border-bottom" />
@@ -91,7 +92,7 @@ $input-padding-left: 1.5rem;
 
     &:focus ~ #{$self}__label,
     &:not(:placeholder-shown) ~ #{$self}__label {
-      transform: translate(50%, -110%) scale(0.7);
+      transform: translate(60%, -110%) scale(0.7);
     }
 
     &::placeholder {
