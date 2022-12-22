@@ -12,6 +12,8 @@ export interface Props {
   id?: string;
   label?: string;
   modelValue?: string;
+  isError?: boolean;
+  hint?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -26,6 +28,7 @@ const changeInputValue = (event: Event) => {
 };
 
 const errorClass = computed(() => props.error && 'custom-input--error');
+const idHint = computed(() => props.id && `${props.id}-hint`);
 </script>
 
 <template>
@@ -34,15 +37,20 @@ const errorClass = computed(() => props.error && 'custom-input--error');
       @input="changeInputValue"
       v-bind="$attrs"
       :id="id"
+      :aria-invalid="isError"
       :value="modelValue"
       class="custom-input__field"
+      :aria-describedby="idHint"
       :placeholder="label"
     />
     <label class="custom-input__label" :for="id">{{ label }}</label>
-    <span class="custom-input__border-bottom" />
-    <span class="custom-input__border-right" />
-    <span class="custom-input__border-top" />
-    <span class="custom-input__border-left" />
+    <span class="custom-input__border-bottom" aria-hidden="true" />
+    <span class="custom-input__border-right" aria-hidden="true" />
+    <span class="custom-input__border-top" aria-hidden="true" />
+    <span class="custom-input__border-left" aria-hidden="true" />
+    <span class="custom-input__hint-message" :id="idHint" v-show="isError">{{
+      hint
+    }}</span>
   </div>
 </template>
 
