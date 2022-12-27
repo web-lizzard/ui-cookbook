@@ -4,10 +4,10 @@ import CustomCarousel from './components/CustomCarousel/CustomCarousel.vue';
 
 const carouselSettings = [
   {
-    slotName: 'item-1',
+    id: '1',
   },
   {
-    slotName: 'item-2',
+    id: '2',
   },
 ];
 </script>
@@ -16,11 +16,7 @@ const carouselSettings = [
   <main>
     <CustomInput />
     <CustomCarousel :items="carouselSettings">
-      <template
-        v-for="(item, key) in carouselSettings"
-        :key="key"
-        #[item.slotName]
-      >
+      <template v-for="(item, key) in carouselSettings" :key="key" #[item.id]>
         <div class="item">{{ item }} {{ key }}</div>
       </template>
     </CustomCarousel>

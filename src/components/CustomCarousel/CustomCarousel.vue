@@ -1,28 +1,22 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref, useSlots } from 'vue';
+import { computed, ref, useSlots } from 'vue';
 import CustomCarouselItem, {
   type SwipeDirection,
 } from './CustomCarouselItem.vue';
 
-export interface CarouselItem {
-  slotName: string;
-}
-
-export interface Props {
-  items: CarouselItem[];
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  items: () => [],
-});
+const slots = useSlots();
 
 const currentSlide = ref(0);
 const content = ref<null | HTMLDivElement>(null);
 
-const itemsLength = computed(() => props.items.length);
+const slotsName = computed(() =>
+  Object.keys(slots).filter((name) => name !== 'header')
+);
+
+const itemsLength = computed(() => slotsName.value.length);
 const isLeftButtonIsDisabled = computed(() => currentSlide.value === 0);
 const isRightButtonIsDisabled = computed(
-  () => currentSlide.value === props.items.length - 1
+  () => currentSlide.value === slotsName.value.length - 1
 );
 
 const offset = computed(() => {
@@ -57,7 +51,7 @@ const handleSwipe = (direction: SwipeDirection) => {
 const changeCurrentSlide = (targetSlide: number) => {
   if (
     targetSlide < 0 ||
-    targetSlide >= props.items.length ||
+    targetSlide >= slotsName.value.length ||
     targetSlide === currentSlide.value
   ) {
     return;
@@ -74,36 +68,38 @@ const changeCurrentSlide = (targetSlide: number) => {
       and Next buttons to navigate.
     </span>
 
-    <div class="custom-carousel__buttons-box | flex" aria-role="toolbar">
-      <button
-        @click="setPreviousSlide"
-        :disabled="isLeftButtonIsDisabled"
-        class="custom-carousel__button custom-carousel__button--prev"
-      >
-        <span class="custom-carousel__icon" aria-hidden="true"></span>
-        <span class="sr-only">Previous Slide</span>
-      </button>
-      <button
-        @click="setNextSlide"
-        :disabled="isRightButtonIsDisabled"
-        class="custom-carousel__button carousel__button--next"
-      >
-        <span class="custom-carousel__icon" aria-hidden="true"></span>
-        <span class="sr-only">Next Slide</span>
-      </button>
-    </div>
+    <slot name="header">
+      <header class="custom-carousel__buttons-box | flex" aria-role="toolbar">
+        <button
+          @click="setPreviousSlide"
+          :disabled="isLeftButtonIsDisabled"
+          class="custom-carousel__button custom-carousel__button--prev"
+        >
+          <span class="custom-carousel__icon" aria-hidden="true"></span>
+          <span class="sr-only">Previous Slide</span>
+        </button>
+        <button
+          @click="setNextSlide"
+          :disabled="isRightButtonIsDisabled"
+          class="custom-carousel__button carousel__button--next"
+        >
+          <span class="custom-carousel__icon" aria-hidden="true"></span>
+          <span class="sr-only">Next Slide</span>
+        </button>
+      </header>
+    </slot>
 
     <div ref="content" class="custom-carousel__slides | grid">
-      <slot name="content">
+      <slot name="slides">
         <CustomCarouselItem
           @swipe="handleSwipe"
-          v-for="(item, key) in items"
+          v-for="(name, key) in slotsName"
           :key="key"
           :index="key"
-          :carousel-length="items.length"
-          :name="item.slotName"
+          :carousel-length="slotsName.length"
+          :name="name"
         >
-          <template #[item.slotName]> <slot :name="item.slotName" /> </template>
+          <template #[name]> <slot :name="name" /> </template>
         </CustomCarouselItem>
       </slot>
     </div>
@@ -115,10 +111,12 @@ const changeCurrentSlide = (targetSlide: number) => {
 
 .custom-carousel {
   --grid-gap: 2rem;
+  --flex-gap: 2rem;
+  --max-width: 100rem;
+  --button-width: 5rem;
 
   &__buttons-box {
-    --flex-gap: 2rem;
-    max-width: var(--max-width, 100rem);
+    max-width: var(--max-width);
   }
 
   &__button {
@@ -128,7 +126,7 @@ const changeCurrentSlide = (targetSlide: number) => {
     background-color: variables.$blue-500;
     cursor: pointer;
     color: white;
-    width: var(--button-width, 5rem);
+    width: var(--button-width);
 
     &:disabled {
       background-color: variables.$gray-300;
