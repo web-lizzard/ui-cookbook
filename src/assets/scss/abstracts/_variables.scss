@@ -10,6 +10,8 @@ $border-radius-large: 16px;
 
 //colors
 
+$gray-300: #eef;
+
 $blue-300: #A6D8FF;
 $blue-400: #59B7FF;
 $blue-500: #4793CC;
@@ -18,5 +20,42 @@ $blue-700: #536C80;
 
 $red-300: #FFC4CE;
 $red-400: #FF788E;
+
+
+.sr-only {
+	border: 0 !important;
+	clip: rect(1px, 1px, 1px, 1px) !important; /* 1 */
+	-webkit-clip-path: inset(50%) !important;
+		clip-path: inset(50%) !important;  /* 2 */
+	height: 1px !important;
+	margin: -1px !important;
+	overflow: hidden !important;
+	padding: 0 !important;
+	position: absolute !important;
+	width: 1px !important;
+	white-space: nowrap !important;            /* 3 */
+}
+
+.sr-only-focusable:focus,
+.sr-only-focusable:active {
+	clip: auto !important;
+	-webkit-clip-path: none !important;
+		clip-path: none !important;
+	height: auto !important;
+	margin: auto !important;
+	overflow: visible !important;
+	width: auto !important;
+	white-space: normal !important;
+}
+
+.grid {
+	display: grid;
+	gap: var(--grid-gap, 1rem);
+}
+
+.flex {
+	display: flex;
+	gap: var(--flex-gap, 1rem);
+}
 
 
